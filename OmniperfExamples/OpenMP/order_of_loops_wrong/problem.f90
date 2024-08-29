@@ -4,7 +4,7 @@
 
         IMPLICIT NONE
 
-        !$OMP REQUIRES UNIFIED_SHARED_MEMORY 
+        ! !$OMP REQUIRES UNIFIED_SHARED_MEMORY
 
         INTEGER,PARAMETER :: n = 1024
         INTEGER,PARAMETER :: m = 1024
@@ -46,7 +46,7 @@
 
          !timinig loop
          starttime = omp_get_wtime()
-         !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j,temp) REDUCTION(+:res)
+         !$OMP TARGET TEAMS DISTRIBUTE PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j,temp) REDUCTION(+:res)
          DO i=1,n
            temp = 0.0_rk
            DO j=1,m
@@ -54,7 +54,7 @@
            END DO
             res = res + y(i) * temp
          END DO
-         !$OMP END PARALLEL DO
+         !$OMP END TARGET TEAMS DISTRIBUTE PARALLEL DO
 
          IF(ABS(res - REAL(n*m, KIND=rk)) > 0.0001) THEN
                  WRITE(*,*) "the result is incorrect:"
