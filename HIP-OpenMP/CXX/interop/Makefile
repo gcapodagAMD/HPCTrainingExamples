@@ -1,15 +1,13 @@
 EXECUTABLE = ./interop
 all: $(EXECUTABLE) 
 
-.PHONY: test
-
 OBJECTS = interop.o interop_hip.o
 
 ROCM_GPU ?= $(strip $(shell rocminfo |grep -m 1 -E gfx[^0]{1} | sed -e 's/ *Name: *//'))
 OPENMP_FLAGS = -fopenmp --offload-arch=${ROCM_GPU}
 
-CXXFLAGS = -g -O2 -fPIC ${OPENMP_FLAGS} 
-HIPCC_FLAGS = -g -O2 -DNDEBUG -fPIC -I${ROCM_PATH}/include
+CXXFLAGS = -g -O2 -fPIC ${OPENMP_FLAGS} -D __HIP_PLATFORM_AMD__
+HIPCC_FLAGS = -g -O2 -DNDEBUG -fPIC -I${ROCM_PATH}/include 
 
 HIPCC ?= hipcc
 
